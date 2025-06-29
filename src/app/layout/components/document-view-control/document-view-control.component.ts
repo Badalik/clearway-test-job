@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { DocumentControlsService } from '@core/services/document-controls.service';
+import { DocumentControlsService } from '@documents/services/document-controls.service';
 
 @Component({
   selector: 'app-document-view-control',

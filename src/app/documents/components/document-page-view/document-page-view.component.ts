@@ -5,7 +5,8 @@ import { skip } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { SCROLLBAR_WIDTH } from '@core/constants/constants';
-import { DocumentControlsService } from '@core/services/document-controls.service';
+
+import { DocumentControlsService } from '@documents/services/document-controls.service';
 
 @UntilDestroy()
 @Component({
