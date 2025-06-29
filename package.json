@@ -8,7 +8,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "npm run lint lint:eslint && npm run ",
+    "lint": "npm run lint lint:eslint",
     "lint:eslint": "eslint \"src/**/*.ts\"",
     "lint:eslint:fix": "eslint \"{src}/**/*.ts\" --fix",
     "lint:eslint:partial": "eslint",
