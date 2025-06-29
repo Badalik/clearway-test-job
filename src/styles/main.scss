@@ -1,0 +1,28 @@
+@use './abstracts/functions';
+@use './abstracts/variables';
+@use './base';
+
+$colors: (
+  'text': #414859,
+  'bg': #f8f8fb,
+  'bg-dark': #b3b3b3,
+  'yellow': #ffa515,
+  'red': #d95947,
+  'gray': #b3b3b3,
+  'light-gray': #eee,
+);
+
+:root{
+  font-family: variables.$font-main;
+  font-size: 16px;
+
+  --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-proxima: ProximaNovaExCn;
+
+  @each $key, $value in $colors {
+    --color-#{$key}: #{$value};
+    --color-#{$key}-rgb: #{functions.HexToRGB($value)};
+  }
+
+  --color-selection: rgba(var(--color-yellow-rgb), 0.7);
+}

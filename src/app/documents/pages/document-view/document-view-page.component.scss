@@ -1,0 +1,10 @@
+@use 'abstracts/variables';
+
+:host {
+  display: flex;
+  flex: 1;
+  overflow: auto;
+  flex-direction: column;
+  height: 100%;
+  background-color: variables.$color-bg-dark;
+}

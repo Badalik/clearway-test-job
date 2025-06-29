@@ -1,0 +1,9 @@
+<ul>
+  @let list = listComputed();
+
+  @for (row of list; track row[0]) {
+    <li>
+      <b>{{ row[0] }}:</b> <span>{{ row[1] }}</span>
+    </li>
+  }
+</ul>

@@ -1,0 +1,8 @@
+@let document = document$ | async;
+
+@if (document !== null) {
+  <app-document-view
+    [document]="document"
+    [documentPages]="documentPages()"
+  ></app-document-view>
+}

@@ -1,0 +1,4 @@
+{
+  "*.{ts,js,html}": ["npm run lint:eslint:partial"],
+  "*.{scss}": ["npm run lint:styles:partial"]
+}

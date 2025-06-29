@@ -1,0 +1,9 @@
+:host {
+  padding-right: 2rem;
+  padding-left: 2rem;
+  display: block;
+
+  &.full {
+    width: 100%;
+  }
+}

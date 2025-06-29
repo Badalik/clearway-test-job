@@ -1,0 +1,24 @@
+<div class="scale">
+  @let scale = scale$ | async;
+
+  <button
+    [disabled]="minScale === (scale$ | async)"
+    (click)="downScale()"
+    class="down"
+  >-</button>
+
+  <span class="value">{{ scale + '%' }}</span>
+
+  <button
+    [disabled]="maxScale === (scale$ | async)"
+    (click)="upScale()"
+    class="up"
+  >+</button>
+</div>
+
+<button
+  (click)="save()"
+  class="text"
+>
+  Save
+</button>

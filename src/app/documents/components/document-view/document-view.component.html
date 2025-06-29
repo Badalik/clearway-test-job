@@ -1,0 +1,9 @@
+@let pages = documentPages();
+
+@if (pages !== null) {
+  @for (page of pages; track $index) {
+    <div class="page">
+      <app-document-page-view [page]="page"></app-document-page-view>
+    </div>
+  }
+}

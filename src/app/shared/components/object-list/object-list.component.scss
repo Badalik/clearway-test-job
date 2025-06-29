@@ -1,0 +1,25 @@
+ul {
+  display: table;
+}
+
+li {
+  display: table-row;
+  font-size: 0.875rem;
+
+  b,
+  span {
+    display: table-cell;
+  }
+
+  b {
+    padding-right: 0.5rem;
+    font-weight: 600;
+  }
+
+  &:not(:last-child) {
+    b,
+    span {
+      padding-bottom: 0.5rem;
+    }
+  }
+}

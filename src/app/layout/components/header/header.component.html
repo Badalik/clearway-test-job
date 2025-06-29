@@ -1,0 +1,13 @@
+<app-container mode="full">
+  <div class="content">
+    <div class="col">
+      <h1>{{ (routeTitle$ | async) ?? (pageTitle$ | async) }}</h1>
+    </div>
+
+    <div class="col">
+      @if (isDocumentViewRoute$ | async) {
+        <app-document-view-control></app-document-view-control>
+      }
+    </div>
+  </div>
+</app-container>
