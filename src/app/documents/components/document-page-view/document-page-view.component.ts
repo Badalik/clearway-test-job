@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, input, OnInit } from '@angular/core';
+import { Component, ComponentRef, ElementRef, inject, input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeStyle, SafeUrl } from '@angular/platform-browser';
 import { skip } from 'rxjs';
 
@@ -6,6 +6,9 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { SCROLLBAR_WIDTH } from '@core/constants/constants';
 
+import { AnnotationComponent } from '@annotations/components/annotation';
+import { AnnotationsService } from '@annotations/services/annotations.service';
+import { DocumentViewPageComponent } from '@documents/pages/document-view';
 import { DocumentControlsService } from '@documents/services/document-controls.service';
 
 @UntilDestroy()
@@ -33,11 +36,17 @@ export class DocumentPageViewComponent implements OnInit {
 
   private readonly _domSanitizer = inject(DomSanitizer);
 
-  private readonly _documentControlsService = inject(DocumentControlsService);
-
   private readonly _elementRef = inject(ElementRef);
 
+  private readonly _documentControlsService = inject(DocumentControlsService);
+
+  private readonly _annotationsService = inject(AnnotationsService);
+
+  private readonly _documentViewPageComponent = inject(DocumentViewPageComponent);
+
   private _scale = this._documentControlsService.scale$.getValue();
+
+  private _newAnnotationRef: ComponentRef<AnnotationComponent> | null = null;
 
   public ngOnInit(): void {
     const blob = this.page();
@@ -49,6 +58,41 @@ export class DocumentPageViewComponent implements OnInit {
     this.backgroundImage = this._domSanitizer.bypassSecurityTrustStyle(`url(${objectURL})`);
 
     this._getImageSize(objectURL);
+  }
+
+  protected onImageMousedown(event: MouseEvent): void {
+    const top = event.pageY + this._documentViewPageComponent.elementRef.nativeElement.scrollTop;
+    const left = event.pageX + this._documentViewPageComponent.elementRef.nativeElement.scrollLeft;
+
+    this._newAnnotationRef = this._annotationsService.create(top, left);
+  }
+
+  protected onImageMouseup(event: MouseEvent): void {
+    if (this._newAnnotationRef !== null) {
+      const width = parseInt(this._newAnnotationRef.instance.width());
+      const height = parseInt(this._newAnnotationRef.instance.height());
+
+      if (!width && !height) {
+        this._annotationsService.delete(this._newAnnotationRef);
+      }
+
+      this._newAnnotationRef.setInput('stateClass', '');
+      this._newAnnotationRef.setInput('componentRef', this._newAnnotationRef);
+      this._newAnnotationRef.changeDetectorRef.detectChanges();
+
+      this._newAnnotationRef = null;
+    }
+  }
+
+  protected onImageMousemove(event: MouseEvent): void {
+    if (this._newAnnotationRef !== null) {
+      AnnotationsService.addSizeByMouseEvent(
+        event,
+        this._newAnnotationRef,
+        this._documentViewPageComponent.elementRef.nativeElement.scrollTop,
+        this._documentViewPageComponent.elementRef.nativeElement.scrollLeft,
+      );
+    }
   }
 
   private _getImageSize(objectURL: string) {
@@ -73,7 +117,7 @@ export class DocumentPageViewComponent implements OnInit {
             return scale > toDownScale;
           });
 
-        const scale = this._documentControlsService.breakpoints[breakpointIndex];
+        const scale = breakpoints[breakpointIndex];
 
         this._scale = scale;
 

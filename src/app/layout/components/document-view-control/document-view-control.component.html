@@ -4,6 +4,7 @@
   <button
     [disabled]="minScale === (scale$ | async)"
     (click)="downScale()"
+    type="button"
     class="down"
   >-</button>
 
@@ -12,12 +13,14 @@
   <button
     [disabled]="maxScale === (scale$ | async)"
     (click)="upScale()"
+    type="button"
     class="up"
   >+</button>
 </div>
 
 <button
   (click)="save()"
+  type="button"
   class="text"
 >
   Save

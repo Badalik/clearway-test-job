@@ -28,6 +28,7 @@
     ],
     "paths": {
       "@core/*": ["src/app/core/*"],
+      "@annotations/*": ["src/app/annotations/*"],
       "@documents/*": ["src/app/documents/*"],
       "@shared/*": ["src/app/shared/*"]
     }

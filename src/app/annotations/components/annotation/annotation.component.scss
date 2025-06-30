@@ -1,0 +1,56 @@
+@use 'abstracts/variables';
+
+:host {
+  position: absolute;
+  // overflow: hidden;
+  width: 0;
+  height: 0;
+  background-color: rgba(variables.$color-yellow-rgb, 0.6);
+  border-radius: 3px;
+  transform: translateY(0) translateX(0) translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+
+  &.state_editing {
+    pointer-events: none;
+
+    .close {
+      display: none;
+    }
+  }
+}
+
+button {
+  line-height: 1;
+  user-select: none;
+  border: none;
+}
+
+.close {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  background-color: rgba(variables.$color-red-rgb, 0.8);
+  border-radius: 50%;
+
+  &:before,
+  &:after {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 10px;
+    height: 1px;
+    content: '';
+    background-color: #fff;
+  }
+
+  &:before {
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    transform: rotate(-45deg);
+  }
+}

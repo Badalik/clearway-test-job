@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
 
 import { DOCUMENT_PAGES_TOKEN, DOCUMENT_TOKEN, DOCUMENT_VIEW_PAGE_PROVIDERS } from './document-view-page.providers';
 import { DocumentViewComponent } from '../../components/document-view';
@@ -12,6 +12,8 @@ import { DocumentViewComponent } from '../../components/document-view';
   styleUrl: './document-view-page.component.scss',
 })
 export class DocumentViewPageComponent {
+
+  public elementRef: ElementRef<HTMLElement> = inject(ElementRef);
 
   protected readonly document$ = inject(DOCUMENT_TOKEN);
 
