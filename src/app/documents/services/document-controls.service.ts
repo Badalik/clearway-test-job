@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { DocumentResponse } from '@core/models';
+
 import { AnnotationsService } from '@annotations/services/annotations.service';
 
 @Injectable({
@@ -21,6 +23,8 @@ export class DocumentControlsService {
   private readonly _annotationsService = inject(AnnotationsService);
 
   private _breakpointIndex = 7;
+
+  private _currentDocument: DocumentResponse | null = null;
 
   public downScale(): void {
     const index = this._breakpointIndex - 1;
@@ -50,7 +54,13 @@ export class DocumentControlsService {
     }
   }
 
+  public setCurrentDocument(value: DocumentResponse | null): void {
+    this._currentDocument = value;
+  }
+
   public save(): void {
+    console.log(this._currentDocument);
+
     for (const value of Object.values(this._annotationsService.annotations)) {
       console.log(value);
     }

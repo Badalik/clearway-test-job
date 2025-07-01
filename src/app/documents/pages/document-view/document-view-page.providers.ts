@@ -7,6 +7,7 @@ import { DocumentResponse } from '@core/models';
 import { ApiFilesService } from '@core/services/api-files.service';
 import { ApiService } from '@core/services/api.service';
 import { PageTitleService } from '@core/services/page-title.service';
+import { DocumentControlsService } from '@documents/services/document-controls.service';
 
 export const DOCUMENT_TOKEN = new InjectionToken<Observable<DocumentResponse>>(
   'A stream with document',
@@ -33,6 +34,7 @@ export function documentFactory(): Observable<DocumentResponse> {
   const apiFilesService = inject(ApiFilesService);
   const titleService = inject(Title);
   const pageTitleService = inject(PageTitleService);
+  const documentControlsService = inject(DocumentControlsService);
   const documentPages = inject(DOCUMENT_PAGES_TOKEN);
 
   return apiService.getDocumentById(route.snapshot.paramMap.get('id'))
@@ -41,6 +43,7 @@ export function documentFactory(): Observable<DocumentResponse> {
         const pages = res.pages;
         const blobs: Blob[] = [];
 
+        documentControlsService.setCurrentDocument(res);
         titleService.setTitle(res.name ?? '');
         pageTitleService.setTitle(res.name ?? null);
 
