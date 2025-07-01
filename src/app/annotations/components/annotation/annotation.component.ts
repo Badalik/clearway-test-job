@@ -43,6 +43,12 @@ export class AnnotationComponent implements OnInit {
 
   public componentRef = input.required<ComponentRef<AnnotationComponent>>();
 
+  public startMovingLayerY = 0;
+
+  public startMovingLayerX = 0;
+
+  public startedMovingMatrix: DOMMatrixReadOnly | null = null;
+
   protected content: string | null = null;
 
   private readonly _annotationsService = inject(AnnotationsService);
@@ -52,12 +58,6 @@ export class AnnotationComponent implements OnInit {
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
   private _ratio = computed(() => parseInt(this.height()) / parseInt(this.width()));
-
-  private _startMovingLayerY = 0;
-
-  private _startMovingLayerX = 0;
-
-  private _startedMovingMatrix: DOMMatrixReadOnly | null = null;
 
   public ngOnInit(): void {
     this._documentControlsService.scale$
@@ -83,12 +83,12 @@ export class AnnotationComponent implements OnInit {
 
   protected delete(): void {
     this._annotationsService.delete(this.componentRef());
-    this._annotationsService.deleteAnnotation(this.id());
+    this._annotationsService.deleteAnnotationContent(this.id());
   }
 
   protected saveText(event: Event): void {
     this.content = (event.target as HTMLInputElement).value;
-    this._annotationsService.addAnnotation(this.id(), this.content);
+    this._annotationsService.addAnnotationContent(this.id(), this.content);
 
     this._changeDetectorRef.detectChanges();
   }
@@ -98,27 +98,20 @@ export class AnnotationComponent implements OnInit {
     event.stopPropagation();
 
     const transform = this.componentRef().location.nativeElement.style.transform;
-    this._startMovingLayerY = event.layerY;
-    this._startMovingLayerX = event.layerX;
-    this._startedMovingMatrix = new DOMMatrixReadOnly(transform);
+    this.startMovingLayerY = event.layerY;
+    this.startMovingLayerX = event.layerX;
+    this.startedMovingMatrix = new DOMMatrixReadOnly(transform);
+
+    this._annotationsService.setMovingComponentRef(this.componentRef());
   }
 
   @HostListener('mouseup')
   private _onMouseup() {
-    this._startMovingLayerY = 0;
-    this._startMovingLayerX = 0;
-    this._startedMovingMatrix = null;
-  }
+    this.startMovingLayerY = 0;
+    this.startMovingLayerX = 0;
+    this.startedMovingMatrix = null;
 
-  @HostListener('mousemove', ['$event'])
-  private _onMousemove(event: MouseEvent) {
-    if (this._startedMovingMatrix !== null) {
-      const translateY = this._startedMovingMatrix.m42 - (this._startMovingLayerY - event.layerY);
-      const translateX = this._startedMovingMatrix.m41 - (this._startMovingLayerX - event.layerX);
-      const element = this.componentRef().location.nativeElement;
-
-      element.style.transform = `translateY(${translateY}px) translateX(${translateX}px)`;
-    }
+    this._annotationsService.setMovingComponentRef(null);
   }
 
 }

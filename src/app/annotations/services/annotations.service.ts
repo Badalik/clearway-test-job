@@ -1,4 +1,4 @@
-import { ApplicationRef, ComponentRef, createComponent, inject, Injectable } from '@angular/core';
+import { ApplicationRef, ComponentRef, createComponent, inject, Injectable, RendererFactory2 } from '@angular/core';
 
 import { AnnotationComponent } from '@annotations/components/annotation';
 
@@ -9,9 +9,17 @@ export class AnnotationsService {
 
   private _appRef = inject(ApplicationRef);
 
-  private _idIncrement = 1;
+  private _rendererFactory = inject(RendererFactory2);
+
+  private _renderer = this._rendererFactory.createRenderer(null, null);
+
+  private _idIncrement = 0;
 
   private _annotations: { [key: string]: string } = {};
+
+  private _movingComponentRef: ComponentRef<AnnotationComponent> | null = null;
+
+  private _mousemoveUnlistener?: () => void;
 
   public get annotations(): { [key: string]: string } {
     return this._annotations;
@@ -74,6 +82,24 @@ export class AnnotationsService {
       },
     );
 
+    if (!this._idIncrement) {
+      this._mousemoveUnlistener = this._renderer.listen(document, 'mousemove', (event) => {
+        if (this._movingComponentRef !== null) {
+          const instance = this._movingComponentRef.instance;
+          const element = this._movingComponentRef.location.nativeElement;
+
+          if (instance.startedMovingMatrix !== null) {
+            const translateY = instance.startedMovingMatrix.m42 - (instance.startMovingLayerY - event.layerY);
+            const translateX = instance.startedMovingMatrix.m41 - (instance.startMovingLayerX - event.layerX);
+
+            element.style.transform = `translateY(${translateY}px) translateX(${translateX}px)`;
+          }
+        }
+      });
+    }
+
+    this._idIncrement++;
+
     const element = componentRef.location.nativeElement;
     const topInput = top + scrollTop;
     const leftInput = left + scrollLeft;
@@ -94,8 +120,6 @@ export class AnnotationsService {
 
     parentElement.appendChild(componentRef.location.nativeElement);
 
-    this._idIncrement++;
-
     componentRef.changeDetectorRef.detectChanges();
 
     return componentRef;
@@ -105,13 +129,23 @@ export class AnnotationsService {
     this._appRef.detachView(componentRef.hostView);
 
     componentRef.destroy();
+
+    this._idIncrement--;
+
+    if (!this._idIncrement && typeof this._mousemoveUnlistener !== 'undefined') {
+      this._mousemoveUnlistener();
+    }
   }
 
-  public addAnnotation(id: string, annotation: string): void {
+  public setMovingComponentRef(componentRef: ComponentRef<AnnotationComponent> | null): void {
+    this._movingComponentRef = componentRef;
+  }
+
+  public addAnnotationContent(id: string, annotation: string): void {
     this._annotations[id] = annotation;
   }
 
-  public deleteAnnotation(id: string): void {
+  public deleteAnnotationContent(id: string): void {
     delete this._annotations[id];
   }
 
