@@ -8,7 +8,6 @@ import { SCROLLBAR_WIDTH } from '@core/constants/constants';
 
 import { AnnotationComponent } from '@annotations/components/annotation';
 import { AnnotationsService } from '@annotations/services/annotations.service';
-import { DocumentViewPageComponent } from '@documents/pages/document-view';
 import { DocumentControlsService } from '@documents/services/document-controls.service';
 
 @UntilDestroy()
@@ -45,8 +44,6 @@ export class DocumentPageViewComponent implements OnInit {
 
   private readonly _annotationsService = inject(AnnotationsService);
 
-  private readonly _documentViewPageComponent = inject(DocumentViewPageComponent);
-
   private _scale = this._documentControlsService.scale$.getValue();
 
   private _newAnnotationRef: ComponentRef<AnnotationComponent> | null = null;
@@ -74,10 +71,9 @@ export class DocumentPageViewComponent implements OnInit {
   protected onImageMousemove(event: MouseEvent): void {
     if (this._newAnnotationRef !== null) {
       AnnotationsService.addSizeByMouseEvent(
-        event,
+        event.layerY,
+        event.layerX,
         this._newAnnotationRef,
-        this._documentViewPageComponent.elementRef.nativeElement.scrollTop,
-        this._documentViewPageComponent.elementRef.nativeElement.scrollLeft,
       );
     }
   }

@@ -26,7 +26,8 @@ export class AnnotationsService {
   }
 
   public static addSizeByMouseEvent(
-    event: MouseEvent,
+    deltaY: number,
+    deltaX: number,
     componentRef: ComponentRef<AnnotationComponent>,
     scrollTop = 0,
     scrollLeft = 0,
@@ -34,8 +35,8 @@ export class AnnotationsService {
     const element = componentRef.location.nativeElement;
     const top = componentRef.instance.top();
     const left = componentRef.instance.left();
-    const newTop = event.layerY + scrollTop;
-    const newLeft = event.layerX + scrollLeft;
+    const newTop = deltaY + scrollTop;
+    const newLeft = deltaX + scrollLeft;
     let transformY;
     let transformX;
     let width: number;
