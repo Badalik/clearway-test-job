@@ -5,8 +5,6 @@ import { AnnotationsService } from '@annotations/services/annotations.service';
 @Component({
   selector: 'app-annotation',
   host: {
-    '[style.top]': 'top()',
-    '[style.left]': 'left()',
     '[style.transform]': 'transform()',
     '[style.width]': 'width()',
     '[style.height]': 'height()',
@@ -18,9 +16,9 @@ import { AnnotationsService } from '@annotations/services/annotations.service';
 })
 export class AnnotationComponent {
 
-  public top = input.required<string>();
+  public top = input.required<number>();
 
-  public left = input.required<string>();
+  public left = input.required<number>();
 
   public transform = input.required<string>();
 

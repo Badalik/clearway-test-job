@@ -16,27 +16,30 @@ export class AnnotationsService {
     scrollLeft = 0,
   ): void {
     const element = componentRef.location.nativeElement;
-    const top = parseInt(componentRef.instance.top());
-    const left = parseInt(componentRef.instance.left());
+    const top = componentRef.instance.top();
+    const left = componentRef.instance.left();
     const newTop = event.layerY + scrollTop;
     const newLeft = event.layerX + scrollLeft;
-    let transformY = 'translateY(0)';
-    let transformX = 'translateX(0)';
+    let transformY;
+    let transformX;
     let width: number;
     let height: number;
 
     if (newLeft > left) {
       width = newLeft - left;
+
+      transformX = `translateX(${left}px)`;
     } else {
       width = left - newLeft;
-      transformX = `translateX(${newLeft - left}px)`;
+      transformX = `translateX(${left - width}px)`;
     }
 
     if (newTop > top) {
       height = newTop - top;
+      transformY = `translateY(${top}px)`;
     } else {
       height = top - newTop;
-      transformY = `translateY(${newTop - top}px)`;
+      transformY = `translateY(${top - height}px)`;
     }
 
     const styleWidth = `${width}px`;
@@ -66,24 +69,20 @@ export class AnnotationsService {
     );
 
     const element = componentRef.location.nativeElement;
-    const styleTop = `${top + scrollTop}px`;
-    const styleLeft = `${left + scrollLeft}px`;
-    const styleTransform = `translateY(${top + scrollTop}px) translateX(${left + scrollLeft}px)`;
+    const topInput = top + scrollTop;
+    const leftInput = left + scrollLeft;
+    const styleTransform = 'translateY(0) translateX(0)';
     const styleWidth = `${0}px`;
     const styleHeight = `${0}px`;
 
-    componentRef.setInput('top', styleTop);
-    componentRef.setInput('left', styleLeft);
-    // componentRef.setInput('transform', styleTransform);
-    componentRef.setInput('transform', 'translateY(0) translateX(0)');
+    componentRef.setInput('top', topInput);
+    componentRef.setInput('left', leftInput);
+    componentRef.setInput('transform', styleTransform);
     componentRef.setInput('width', styleWidth);
     componentRef.setInput('height', styleHeight);
     componentRef.setInput('stateClass', 'state_editing');
 
-    element.style.top = styleTop;
-    element.style.left = styleLeft;
-    // element.style.transform = styleTransform;
-    element.style.transform = 'translateY(0) translateX(0)';
+    element.style.transform = styleTransform;
     element.style.width = styleWidth;
     element.style.height = styleHeight;
 
