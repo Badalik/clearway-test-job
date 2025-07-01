@@ -1,4 +1,4 @@
-import { Component, ComponentRef, ElementRef, inject, input, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentRef, ElementRef, HostListener, inject, input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeStyle, SafeUrl } from '@angular/platform-browser';
 import { skip } from 'rxjs';
 
@@ -71,7 +71,19 @@ export class DocumentPageViewComponent implements OnInit {
     );
   }
 
-  protected onImageMouseup(): void {
+  protected onImageMousemove(event: MouseEvent): void {
+    if (this._newAnnotationRef !== null) {
+      AnnotationsService.addSizeByMouseEvent(
+        event,
+        this._newAnnotationRef,
+        this._documentViewPageComponent.elementRef.nativeElement.scrollTop,
+        this._documentViewPageComponent.elementRef.nativeElement.scrollLeft,
+      );
+    }
+  }
+
+  @HostListener('mouseup')
+  private _onMouseup() {
     if (this._newAnnotationRef !== null) {
       const width = parseInt(this._newAnnotationRef.instance.width());
       const height = parseInt(this._newAnnotationRef.instance.height());
@@ -85,17 +97,6 @@ export class DocumentPageViewComponent implements OnInit {
       this._newAnnotationRef.changeDetectorRef.detectChanges();
 
       this._newAnnotationRef = null;
-    }
-  }
-
-  protected onImageMousemove(event: MouseEvent): void {
-    if (this._newAnnotationRef !== null) {
-      AnnotationsService.addSizeByMouseEvent(
-        event,
-        this._newAnnotationRef,
-        this._documentViewPageComponent.elementRef.nativeElement.scrollTop,
-        this._documentViewPageComponent.elementRef.nativeElement.scrollLeft,
-      );
     }
   }
 
