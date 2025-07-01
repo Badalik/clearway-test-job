@@ -1,11 +1,11 @@
 // @ts-check
 import { fixupPluginRules } from '@eslint/compat';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import angular from 'angular-eslint';
 import stylisticTs from '@stylistic/eslint-plugin-ts';
+import angular from 'angular-eslint';
 import importPlugin from 'eslint-plugin-import';
 import rxjs from 'eslint-plugin-rxjs';
+import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
@@ -276,6 +276,7 @@ export default tseslint.config(
         objects: 'always-multiline',
         arrays: 'always-multiline',
         functions: 'always-multiline',
+        imports: 'always-multiline',
       }],
       '@stylistic/ts/semi': ['error', 'always'],
       'rxjs/no-async-subscribe': 'error',
