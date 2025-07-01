@@ -64,8 +64,6 @@ export class DocumentPageViewComponent implements OnInit {
   }
 
   protected onImageMousedown(event: MouseEvent): void {
-    console.log(event.target);
-    // event.stopPropagation();
     this._newAnnotationRef = this._annotationsService.create(
       event.layerY,
       event.layerX,

@@ -1,4 +1,10 @@
-{{ width() }} {{ height() }}
+@if (content) {
+  <span>{{ content }}</span>
+} @else {
+  <textarea
+    (keydown.enter)="saveText($event)"
+  ></textarea>
+}
 
 <button
   (click)="delete()"

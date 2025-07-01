@@ -1,4 +1,4 @@
-import { Component, ComponentRef, HostListener, inject, input } from '@angular/core';
+import { ChangeDetectorRef, Component, ComponentRef, HostListener, inject, input } from '@angular/core';
 
 import { AnnotationsService } from '@annotations/services/annotations.service';
 
@@ -29,7 +29,11 @@ export class AnnotationComponent {
 
   public componentRef = input.required<ComponentRef<AnnotationComponent>>();
 
+  protected content: string | null = null;
+
   private readonly _annotationsService = inject(AnnotationsService);
+
+  private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
   private _startMovingLayerY = 0;
 
@@ -39,6 +43,12 @@ export class AnnotationComponent {
 
   protected delete(): void {
     this._annotationsService.delete(this.componentRef());
+  }
+
+  protected saveText(event: Event): void {
+    this.content = (event.target as HTMLInputElement).value;
+
+    this._changeDetectorRef.detectChanges();
   }
 
   @HostListener('mousedown', ['$event'])
