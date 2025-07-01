@@ -15,11 +15,11 @@ import { AnnotationsService } from '@annotations/services/annotations.service';
 })
 export class AnnotationComponent {
 
+  public id = input.required<string>();
+
   public top = input.required<number>();
 
   public left = input.required<number>();
-
-  public transform = input.required<string>();
 
   public width = input.required<string>();
 
@@ -43,10 +43,12 @@ export class AnnotationComponent {
 
   protected delete(): void {
     this._annotationsService.delete(this.componentRef());
+    this._annotationsService.deleteAnnotation(this.id());
   }
 
   protected saveText(event: Event): void {
     this.content = (event.target as HTMLInputElement).value;
+    this._annotationsService.addAnnotation(this.id(), this.content);
 
     this._changeDetectorRef.detectChanges();
   }

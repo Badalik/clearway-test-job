@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+
+import { AnnotationsService } from '@annotations/services/annotations.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +17,8 @@ export class DocumentControlsService {
   ];
 
   public scale$ = new BehaviorSubject<number>(100);
+
+  private readonly _annotationsService = inject(AnnotationsService);
 
   private _breakpointIndex = 7;
 
@@ -47,7 +51,9 @@ export class DocumentControlsService {
   }
 
   public save(): void {
-    console.log('Saved');
+    for (const value of Object.values(this._annotationsService.annotations)) {
+      console.log(value);
+    }
   }
 
 }

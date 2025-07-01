@@ -9,6 +9,14 @@ export class AnnotationsService {
 
   private _appRef = inject(ApplicationRef);
 
+  private _idIncrement = 1;
+
+  private _annotations: { [key: string]: string } = {};
+
+  public get annotations(): { [key: string]: string } {
+    return this._annotations;
+  }
+
   public static addSizeByMouseEvent(
     event: MouseEvent,
     componentRef: ComponentRef<AnnotationComponent>,
@@ -73,6 +81,7 @@ export class AnnotationsService {
     const styleWidth = `${0}px`;
     const styleHeight = `${0}px`;
 
+    componentRef.setInput('id', this._idIncrement.toString());
     componentRef.setInput('top', topInput);
     componentRef.setInput('left', leftInput);
     componentRef.setInput('width', styleWidth);
@@ -85,6 +94,8 @@ export class AnnotationsService {
 
     parentElement.appendChild(componentRef.location.nativeElement);
 
+    this._idIncrement++;
+
     componentRef.changeDetectorRef.detectChanges();
 
     return componentRef;
@@ -94,6 +105,14 @@ export class AnnotationsService {
     this._appRef.detachView(componentRef.hostView);
 
     componentRef.destroy();
+  }
+
+  public addAnnotation(id: string, annotation: string): void {
+    this._annotations[id] = annotation;
+  }
+
+  public deleteAnnotation(id: string): void {
+    delete this._annotations[id];
   }
 
 }
