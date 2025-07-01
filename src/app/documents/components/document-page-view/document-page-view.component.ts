@@ -1,4 +1,4 @@
-import { Component, ComponentRef, ElementRef, inject, input, OnInit } from '@angular/core';
+import { Component, ComponentRef, ElementRef, inject, input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeStyle, SafeUrl } from '@angular/platform-browser';
 import { skip } from 'rxjs';
 
@@ -19,6 +19,9 @@ import { DocumentControlsService } from '@documents/services/document-controls.s
   styleUrl: './document-page-view.component.scss',
 })
 export class DocumentPageViewComponent implements OnInit {
+
+  @ViewChild('page')
+  private _pageElementRef!: ElementRef;
 
   public readonly page = input.required<Blob>();
 
@@ -61,13 +64,14 @@ export class DocumentPageViewComponent implements OnInit {
   }
 
   protected onImageMousedown(event: MouseEvent): void {
-    const top = event.pageY + this._documentViewPageComponent.elementRef.nativeElement.scrollTop;
-    const left = event.pageX + this._documentViewPageComponent.elementRef.nativeElement.scrollLeft;
-
-    this._newAnnotationRef = this._annotationsService.create(top, left);
+    this._newAnnotationRef = this._annotationsService.create(
+      event.layerY,
+      event.layerX,
+      this._pageElementRef.nativeElement,
+    );
   }
 
-  protected onImageMouseup(event: MouseEvent): void {
+  protected onImageMouseup(): void {
     if (this._newAnnotationRef !== null) {
       const width = parseInt(this._newAnnotationRef.instance.width());
       const height = parseInt(this._newAnnotationRef.instance.height());

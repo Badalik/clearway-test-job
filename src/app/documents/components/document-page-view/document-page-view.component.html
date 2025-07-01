@@ -1,8 +1,9 @@
 <div
+  #page
   [style.width]="imageWidth + 'px'"
   [style.height]="imageHeight + 'px'"
   [style.background-image]="backgroundImage"
   (mousedown)="onImageMousedown($event)"
-  (mouseup)="onImageMouseup($event)"
+  (mouseup)="onImageMouseup()"
   (mousemove)="onImageMousemove($event)"
 ></div>

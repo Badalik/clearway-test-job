@@ -18,8 +18,8 @@ export class AnnotationsService {
     const element = componentRef.location.nativeElement;
     const top = parseInt(componentRef.instance.top());
     const left = parseInt(componentRef.instance.left());
-    const newTop = event.pageY + scrollTop;
-    const newLeft = event.pageX + scrollLeft;
+    const newTop = event.layerY + scrollTop;
+    const newLeft = event.layerX + scrollLeft;
     let width: number;
     let height: number;
 
@@ -67,8 +67,8 @@ export class AnnotationsService {
     );
 
     const element = componentRef.location.nativeElement;
-    const styleTop = `${top}px`;
-    const styleLeft = `${left}px`;
+    const styleTop = `${top + scrollTop}px`;
+    const styleLeft = `${left + scrollLeft}px`;
     const styleWidth = `${0}px`;
     const styleHeight = `${0}px`;
 
@@ -83,7 +83,8 @@ export class AnnotationsService {
     element.style.width = styleWidth;
     element.style.height = styleHeight;
 
-    document.body.appendChild(componentRef.location.nativeElement);
+    // document.body.appendChild(componentRef.location.nativeElement);
+    parentElement.appendChild(componentRef.location.nativeElement);
 
     componentRef.changeDetectorRef.detectChanges();
 
