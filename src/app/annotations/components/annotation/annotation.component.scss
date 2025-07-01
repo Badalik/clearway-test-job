@@ -2,9 +2,6 @@
 
 :host {
   position: absolute;
-  // overflow: hidden;
-  width: 0;
-  height: 0;
   background-color: rgba(variables.$color-yellow-rgb, 0.6);
   border-radius: 3px;
   transform: translateY(0) translateX(0) translateZ(0);

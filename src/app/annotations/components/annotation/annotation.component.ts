@@ -7,6 +7,7 @@ import { AnnotationsService } from '@annotations/services/annotations.service';
   host: {
     '[style.top]': 'top()',
     '[style.left]': 'left()',
+    '[style.transform]': 'transform()',
     '[style.width]': 'width()',
     '[style.height]': 'height()',
     '[class]': 'stateClass()',
@@ -20,6 +21,8 @@ export class AnnotationComponent {
   public top = input.required<string>();
 
   public left = input.required<string>();
+
+  public transform = input.required<string>();
 
   public width = input.required<string>();
 
