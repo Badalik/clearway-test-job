@@ -44,10 +44,8 @@ export class AnnotationsService {
 
     const styleWidth = `${width}px`;
     const styleHeight = `${height}px`;
-    const styleTransform = `${transformY} ${transformX}`;
 
-    element.style.transform = styleTransform;
-    componentRef.setInput('transform', styleTransform);
+    element.style.transform = `${transformY} ${transformX}`;
     element.style.width = styleWidth;
     componentRef.setInput('width', styleWidth);
     element.style.height = styleHeight;
@@ -71,13 +69,12 @@ export class AnnotationsService {
     const element = componentRef.location.nativeElement;
     const topInput = top + scrollTop;
     const leftInput = left + scrollLeft;
-    const styleTransform = 'translateY(0) translateX(0)';
+    const styleTransform = `translateY(${topInput}px) translateX(${leftInput}px)`;
     const styleWidth = `${0}px`;
     const styleHeight = `${0}px`;
 
     componentRef.setInput('top', topInput);
     componentRef.setInput('left', leftInput);
-    componentRef.setInput('transform', styleTransform);
     componentRef.setInput('width', styleWidth);
     componentRef.setInput('height', styleHeight);
     componentRef.setInput('stateClass', 'state_editing');
