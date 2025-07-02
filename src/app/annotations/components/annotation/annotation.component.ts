@@ -2,11 +2,12 @@ import {
   ChangeDetectorRef,
   Component,
   ComponentRef,
-  computed,
+  computed, ElementRef,
   HostListener,
   inject,
   input,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { pairwise } from 'rxjs';
 
@@ -28,6 +29,9 @@ import { DocumentControlsService } from '@documents/services/document-controls.s
   styleUrl: './annotation.component.scss',
 })
 export class AnnotationComponent implements OnInit {
+
+  @ViewChild('textarea')
+  public textAreaElement?: ElementRef<HTMLTextAreaElement>;
 
   public id = input.required<string>();
 

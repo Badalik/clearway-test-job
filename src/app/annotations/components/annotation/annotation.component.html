@@ -2,6 +2,7 @@
   <span>{{ content }}</span>
 } @else {
   <textarea
+    #textarea
     (keydown.enter)="saveText($event)"
   ></textarea>
 }

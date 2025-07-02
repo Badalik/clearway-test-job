@@ -85,13 +85,22 @@ export class DocumentPageViewComponent implements OnInit {
       const width = parseInt(this._newAnnotationRef.instance.width());
       const height = parseInt(this._newAnnotationRef.instance.height());
 
-      if (!width && !height) {
+      if (width && height) {
+        const textAreaElement = this._newAnnotationRef.instance.textAreaElement;
+
+        this._newAnnotationRef.setInput('stateClass', AnnotationStateName.EDITING);
+        this._newAnnotationRef.setInput('componentRef', this._newAnnotationRef);
+
+        this._newAnnotationRef.changeDetectorRef.detectChanges();
+
+        if (typeof textAreaElement !== 'undefined') {
+          textAreaElement.nativeElement.focus();
+        }
+
+        this._newAnnotationRef.changeDetectorRef.detectChanges();
+      } else {
         this._annotationsService.delete(this._newAnnotationRef);
       }
-
-      this._newAnnotationRef.setInput('stateClass', AnnotationStateName.EDITING);
-      this._newAnnotationRef.setInput('componentRef', this._newAnnotationRef);
-      this._newAnnotationRef.changeDetectorRef.detectChanges();
 
       this._newAnnotationRef = null;
     }
