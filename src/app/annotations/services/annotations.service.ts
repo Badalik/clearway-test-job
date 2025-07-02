@@ -1,6 +1,7 @@
 import { ApplicationRef, ComponentRef, createComponent, inject, Injectable, RendererFactory2 } from '@angular/core';
 
 import { AnnotationComponent } from '@annotations/components/annotation';
+import { AnnotationStateName } from '@annotations/enums';
 
 @Injectable({
   providedIn: 'root',
@@ -106,7 +107,7 @@ export class AnnotationsService {
     componentRef.setInput('left', leftInput);
     componentRef.setInput('width', styleWidth);
     componentRef.setInput('height', styleHeight);
-    componentRef.setInput('stateClass', 'state_editing');
+    componentRef.setInput('stateClass', AnnotationStateName.RESIZING);
 
     element.style.transform = styleTransform;
     element.style.width = styleWidth;
@@ -181,6 +182,12 @@ export class AnnotationsService {
           }
 
           element.style.transform = `translateY(${ translateY }px) translateX(${ translateX }px)`;
+
+          if (instance.stateClass() !== AnnotationStateName.DRAGGABLE) {
+            this._movingComponentRef.setInput('stateClass', AnnotationStateName.DRAGGABLE);
+
+            this._movingComponentRef.changeDetectorRef.detectChanges();
+          }
         }
       }
     });
@@ -201,6 +208,10 @@ export class AnnotationsService {
       instance.startMouseMovingLayerY = 0;
       instance.startMouseMovingLayerX = 0;
       instance.startedMovingMatrix = null;
+
+      this._movingComponentRef.setInput('stateClass', AnnotationStateName.EDITING);
+
+      this._movingComponentRef.changeDetectorRef.detectChanges();
 
       this.setMovingComponentRef(null);
     }

@@ -277,6 +277,7 @@ export default tseslint.config(
         arrays: 'always-multiline',
         functions: 'always-multiline',
         imports: 'always-multiline',
+        exports: 'always-multiline',
       }],
       '@stylistic/ts/semi': ['error', 'always'],
       'rxjs/no-async-subscribe': 'error',

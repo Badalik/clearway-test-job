@@ -9,6 +9,7 @@ import { SCROLLBAR_WIDTH } from '@core/constants/constants';
 import { AnnotationComponent } from '@annotations/components/annotation';
 import { AnnotationsService } from '@annotations/services/annotations.service';
 import { DocumentControlsService } from '@documents/services/document-controls.service';
+import { AnnotationStateName } from '@annotations/enums';
 
 @UntilDestroy()
 @Component({
@@ -88,7 +89,7 @@ export class DocumentPageViewComponent implements OnInit {
         this._annotationsService.delete(this._newAnnotationRef);
       }
 
-      this._newAnnotationRef.setInput('stateClass', '');
+      this._newAnnotationRef.setInput('stateClass', AnnotationStateName.EDITING);
       this._newAnnotationRef.setInput('componentRef', this._newAnnotationRef);
       this._newAnnotationRef.changeDetectorRef.detectChanges();
 

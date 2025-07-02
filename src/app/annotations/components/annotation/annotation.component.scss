@@ -12,18 +12,10 @@
   backface-visibility: hidden;
   will-change: transform;
 
-  &.state_editing {
+  &.state_resizing {
     padding: 0;
     cursor: default;
     pointer-events: none;
-
-    textarea {
-      display: none;
-    }
-
-    .close {
-      display: none;
-    }
   }
 }
 
@@ -33,6 +25,14 @@ textarea {
   color: #000;
   background-color: transparent;
   border: none;
+
+  :host.state_resizing & {
+    display: none;
+  }
+
+  :host.state_draggable & {
+    cursor: move;
+  }
 }
 
 button {
@@ -67,5 +67,9 @@ button {
 
   &:after {
     transform: rotate(-45deg);
+  }
+
+  :host.state_resizing & {
+    display: none;
   }
 }
