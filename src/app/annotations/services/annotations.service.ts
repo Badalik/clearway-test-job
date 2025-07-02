@@ -21,6 +21,10 @@ export class AnnotationsService {
 
   private _mousemoveUnlistener?: () => void;
 
+  private _mouseupUnlistener?: () => void;
+
+  private _mouseoutUnlistener?: () => void;
+
   public get annotations(): { [key: string]: string } {
     return this._annotations;
   }
@@ -83,20 +87,9 @@ export class AnnotationsService {
       },
     );
 
+    // Если это первая аннотация, то создаем единственные слушатель движения мышью, mouseup и выхода за границы родителя
     if (!this._idIncrement) {
-      this._mousemoveUnlistener = this._renderer.listen(document, 'mousemove', (event) => {
-        if (this._movingComponentRef !== null) {
-          const instance = this._movingComponentRef.instance;
-          const element = this._movingComponentRef.location.nativeElement;
-
-          if (instance.startedMovingMatrix !== null) {
-            const translateY = instance.startedMovingMatrix.m42 - (instance.startMovingLayerY - event.layerY);
-            const translateX = instance.startedMovingMatrix.m41 - (instance.startMovingLayerX - event.layerX);
-
-            element.style.transform = `translateY(${translateY}px) translateX(${translateX}px)`;
-          }
-        }
-      });
+      this._addListeners(parentElement);
     }
 
     this._idIncrement++;
@@ -133,8 +126,14 @@ export class AnnotationsService {
 
     this._idIncrement--;
 
-    if (!this._idIncrement && typeof this._mousemoveUnlistener !== 'undefined') {
-      this._mousemoveUnlistener();
+    if (!this._idIncrement) {
+      if (typeof this._mousemoveUnlistener !== 'undefined') {
+        this._mousemoveUnlistener();
+      }
+
+      if (typeof this._mouseupUnlistener !== 'undefined') {
+        this._mouseupUnlistener();
+      }
     }
   }
 
@@ -148,6 +147,63 @@ export class AnnotationsService {
 
   public deleteAnnotationContent(id: string): void {
     delete this._annotations[id];
+  }
+
+  private _addListeners(parentElement: HTMLElement): void {
+    this._mousemoveUnlistener = this._renderer.listen(parentElement, 'mousemove', (event) => {
+      if (this._movingComponentRef !== null) {
+        const instance = this._movingComponentRef.instance;
+        const element = this._movingComponentRef.location.nativeElement;
+
+        if (instance.startedMovingMatrix !== null) {
+          const width = parseInt(element.style.width);
+          const height = parseInt(element.style.height);
+          const parentWidth = parseInt(parentElement.style.width);
+          const parentHeight = parseInt(parentElement.style.height);
+
+          let translateY = instance.startedMovingMatrix.m42 - (instance.startMouseMovingLayerY - event.layerY);
+          let translateX = instance.startedMovingMatrix.m41 - (instance.startMouseMovingLayerX - event.layerX);
+
+          if (translateY < 0) {
+            translateY = 0;
+          }
+
+          if (translateY + height > parentHeight) {
+            translateY = parentHeight - height;
+          }
+
+          if (translateX < 0) {
+            translateX = 0;
+          }
+
+          if (translateX + width > parentWidth) {
+            translateX = parentWidth - width;
+          }
+
+          element.style.transform = `translateY(${ translateY }px) translateX(${ translateX }px)`;
+        }
+      }
+    });
+
+    this._mouseupUnlistener = this._renderer.listen(document, 'mouseup', () => {
+      this._resetMoving();
+    });
+
+    this._mouseoutUnlistener = this._renderer.listen(document, 'mouseout', () => {
+      this._resetMoving();
+    });
+  }
+
+  private _resetMoving(): void {
+    if (this._movingComponentRef !== null) {
+      const instance = this._movingComponentRef.instance;
+
+      instance.startMouseMovingLayerY = 0;
+      instance.startMouseMovingLayerX = 0;
+      instance.startedMovingMatrix = null;
+
+      this.setMovingComponentRef(null);
+    }
   }
 
 }

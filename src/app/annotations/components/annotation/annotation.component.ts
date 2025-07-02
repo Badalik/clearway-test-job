@@ -43,9 +43,9 @@ export class AnnotationComponent implements OnInit {
 
   public componentRef = input.required<ComponentRef<AnnotationComponent>>();
 
-  public startMovingLayerY = 0;
+  public startMouseMovingLayerY = 0;
 
-  public startMovingLayerX = 0;
+  public startMouseMovingLayerX = 0;
 
   public startedMovingMatrix: DOMMatrixReadOnly | null = null;
 
@@ -98,20 +98,11 @@ export class AnnotationComponent implements OnInit {
     event.stopPropagation();
 
     const transform = this.componentRef().location.nativeElement.style.transform;
-    this.startMovingLayerY = event.layerY;
-    this.startMovingLayerX = event.layerX;
+    this.startMouseMovingLayerY = event.layerY;
+    this.startMouseMovingLayerX = event.layerX;
     this.startedMovingMatrix = new DOMMatrixReadOnly(transform);
 
     this._annotationsService.setMovingComponentRef(this.componentRef());
-  }
-
-  @HostListener('mouseup')
-  private _onMouseup() {
-    this.startMovingLayerY = 0;
-    this.startMovingLayerX = 0;
-    this.startedMovingMatrix = null;
-
-    this._annotationsService.setMovingComponentRef(null);
   }
 
 }
