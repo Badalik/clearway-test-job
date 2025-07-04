@@ -90,7 +90,7 @@ export class AnnotationsService {
 
     // Если это первая аннотация, то создаем единственные слушатель движения мышью, mouseup и выхода за границы родителя
     if (!this._idIncrement) {
-      this._addListeners(parentElement);
+      this._addListeners();
     }
 
     this._idIncrement++;
@@ -150,13 +150,14 @@ export class AnnotationsService {
     delete this._annotations[id];
   }
 
-  private _addListeners(parentElement: HTMLElement): void {
-    this._mousemoveUnlistener = this._renderer.listen(parentElement, 'mousemove', (event) => {
+  private _addListeners(): void {
+    this._mousemoveUnlistener = this._renderer.listen(document.body, 'mousemove', (event) => {
       if (this._movingComponentRef !== null) {
         const instance = this._movingComponentRef.instance;
         const element = this._movingComponentRef.location.nativeElement;
+        const parentElement: HTMLElement | null = element.parentNode;
 
-        if (instance.startedMovingMatrix !== null) {
+        if (instance.startedMovingMatrix !== null && parentElement !== null) {
           const width = parseInt(element.style.width);
           const height = parseInt(element.style.height);
           const parentWidth = parseInt(parentElement.style.width);
@@ -196,8 +197,15 @@ export class AnnotationsService {
       this._resetMoving();
     });
 
-    this._mouseoutUnlistener = this._renderer.listen(document, 'mouseout', () => {
-      this._resetMoving();
+    this._mouseoutUnlistener = this._renderer.listen(document, 'mouseout', (event) => {
+      if (this._movingComponentRef !== null) {
+        const element = this._movingComponentRef.location.nativeElement;
+        const parentElement: HTMLElement | null = element.parentNode;
+
+        if (event.toElement.isEqualNode(parentElement?.parentNode)) {
+          this._resetMoving();
+        }
+      }
     });
   }
 
