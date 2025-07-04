@@ -1,15 +1,15 @@
 import { Component, ComponentRef, ElementRef, HostListener, inject, input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeStyle, SafeUrl } from '@angular/platform-browser';
-import { skip } from 'rxjs';
+import { pairwise } from 'rxjs';
 
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { SCROLLBAR_WIDTH } from '@core/constants/constants';
 
 import { AnnotationComponent } from '@annotations/components/annotation';
+import { AnnotationStateName } from '@annotations/enums';
 import { AnnotationsService } from '@annotations/services/annotations.service';
 import { DocumentControlsService } from '@documents/services/document-controls.service';
-import { AnnotationStateName } from '@annotations/enums';
 
 @UntilDestroy()
 @Component({
@@ -44,8 +44,6 @@ export class DocumentPageViewComponent implements OnInit {
   private readonly _documentControlsService = inject(DocumentControlsService);
 
   private readonly _annotationsService = inject(AnnotationsService);
-
-  private _scale = this._documentControlsService.scale$.getValue();
 
   private _newAnnotationRef: ComponentRef<AnnotationComponent> | null = null;
 
@@ -130,8 +128,6 @@ export class DocumentPageViewComponent implements OnInit {
 
         const scale = breakpoints[breakpointIndex];
 
-        this._scale = scale;
-
         width = width / 100 * scale;
         height = width * this._imageRatio;
 
@@ -150,13 +146,12 @@ export class DocumentPageViewComponent implements OnInit {
   private _scaleSubscribe(): void {
     this._documentControlsService.scale$
       .pipe(
-        skip(1),
+        pairwise(),
         untilDestroyed(this),
       )
-      .subscribe((scale) => {
-        this.imageWidth = this.imageWidth / this._scale * scale;
+      .subscribe((values) => {
+        this.imageWidth = this.imageWidth / values[0] * values[1];
         this.imageHeight = this.imageWidth * this._imageRatio;
-        this._scale = scale;
       });
   }
 
