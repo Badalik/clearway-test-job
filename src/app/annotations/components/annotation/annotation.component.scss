@@ -17,6 +17,12 @@
     cursor: default;
     pointer-events: none;
   }
+
+  &.state_draggable {
+    * {
+      pointer-events: none;
+    }
+  }
 }
 
 textarea {

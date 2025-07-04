@@ -202,7 +202,7 @@ export class AnnotationsService {
         const element = this._movingComponentRef.location.nativeElement;
         const parentElement: HTMLElement | null = element.parentNode;
 
-        if (event.toElement.isEqualNode(parentElement?.parentNode)) {
+        if (event.fromElement.isEqualNode(element) && !(event.toElement.isEqualNode(parentElement))) {
           this._resetMoving();
         }
       }
