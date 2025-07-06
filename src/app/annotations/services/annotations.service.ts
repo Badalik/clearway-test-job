@@ -135,6 +135,10 @@ export class AnnotationsService {
       if (typeof this._mouseupUnlistener !== 'undefined') {
         this._mouseupUnlistener();
       }
+
+      /*if (typeof this._mouseoutUnlistener !== 'undefined') {
+        this._mouseoutUnlistener();
+      }*/
     }
   }
 
@@ -152,6 +156,10 @@ export class AnnotationsService {
 
   private _addListeners(): void {
     this._mousemoveUnlistener = this._renderer.listen(document.body, 'mousemove', (event) => {
+      if (event.layerY < 0 || event.layerX < 0) {
+        this._resetMoving();
+      }
+
       if (this._movingComponentRef !== null) {
         const instance = this._movingComponentRef.instance;
         const element = this._movingComponentRef.location.nativeElement;
